@@ -1,17 +1,33 @@
-// enums1.rs
+// enums2.rs
 //
-// No hints this time! ;)
+// Execute `rustlings hint enums2` or use the `hint` watch subcommand for a
+// hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 #[derive(Debug)]
 enum Message {
-    // TODO: define a few types of messages as used below
+    Move{x:u32,y:u32},
+    Echo(String),
+    ChangeColor(u32,u32,u32),
+    Quit
+}
+
+impl Message {
+    fn call(&self) {
+        println!("{:?}", self);
+    }
 }
 
 fn main() {
-    println!("{:?}", Message::Quit);
-    println!("{:?}", Message::Echo);
-    println!("{:?}", Message::Move);
-    println!("{:?}", Message::ChangeColor);
+    let messages = [
+        Message::Move { x: 10, y: 30 },
+        Message::Echo(String::from("hello world")),
+        Message::ChangeColor(200, 255, 255),
+        Message::Quit,
+    ];
+
+    for message in &messages {
+        message.call();
+    }
 }

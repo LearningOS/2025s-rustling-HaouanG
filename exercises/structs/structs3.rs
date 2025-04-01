@@ -1,40 +1,58 @@
-// structs3.rs
+// enums3.rs
 //
-// Structs contain data, but can also have logic. In this exercise we have
-// defined the Package struct and we want to test some logic attached to it.
-// Make the code compile and the tests pass!
+// Address all the TODOs to make the tests pass!
 //
-// Execute `rustlings hint structs3` or use the `hint` watch subcommand for a
+// Execute `rustlings hint enums3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
-#[derive(Debug)]
-struct Package {
-    sender_country: String,
-    recipient_country: String,
-    weight_in_grams: i32,
+enum Message {
+    // TODO: implement the message variant types based on their usage below
+    Move(Point),
+    Quit,
+    Echo(String),
+    ChangeColor(u8,u8,u8)
 }
 
-impl Package {
-    fn new(sender_country: String, recipient_country: String, weight_in_grams: i32) -> Package {
-        if weight_in_grams <= 0 {
-            panic!("Can not ship a weightless package.")
-        } else {
-            Package {
-                sender_country,
-                recipient_country,
-                weight_in_grams,
-            }
+struct Point {
+    x: u8,
+    y: u8,
+}
+
+struct State {
+    color: (u8, u8, u8),
+    position: Point,
+    quit: bool,
+    message: String
+}
+
+impl State {
+    fn change_color(&mut self, color: (u8, u8, u8)) {
+        self.color = color;
+    }
+
+    fn quit(&mut self) {
+        self.quit = true;
+    }
+
+    fn echo(&mut self, s: String) { self.message = s }
+
+    fn move_position(&mut self, p: Point) {
+        self.position = p;
+    }
+
+    fn process(&mut self, message: Message) {
+        // TODO: create a match expression to process the different message
+        // variants
+        // Remember: When passing a tuple as a function argument, you'll need
+        // extra parentheses: fn function((t, u, p, l, e))
+        match message{
+            Message::Move(p) => self.move_position(p),
+            Message::Echo(s) => self.echo(s),
+            Message::Quit => self.quit(),
+            Message::ChangeColor(r,g,b) => self.change_color((r,g,b))
         }
-    }
-
-    fn is_international(&self) -> ??? {
-        // Something goes here...
-    }
-
-    fn get_fees(&self, cents_per_gram: i32) -> ??? {
-        // Something goes here...
     }
 }
 
@@ -43,44 +61,22 @@ mod tests {
     use super::*;
 
     #[test]
-    #[should_panic]
-    fn fail_creating_weightless_package() {
-        let sender_country = String::from("Spain");
-        let recipient_country = String::from("Austria");
+    fn test_match_message_call() {
+        let mut state = State {
+            quit: false,
+            position: Point { x: 0, y: 0 },
+            color: (0, 0, 0),
+            message: "hello world".to_string(),
+        };
+        state.process(Message::ChangeColor(255, 0, 255));
+        state.process(Message::Echo(String::from("hello world")));
+        state.process(Message::Move(Point { x: 10, y: 15 }));
+        state.process(Message::Quit);
 
-        Package::new(sender_country, recipient_country, -2210);
-    }
-
-    #[test]
-    fn create_international_package() {
-        let sender_country = String::from("Spain");
-        let recipient_country = String::from("Russia");
-
-        let package = Package::new(sender_country, recipient_country, 1200);
-
-        assert!(package.is_international());
-    }
-
-    #[test]
-    fn create_local_package() {
-        let sender_country = String::from("Canada");
-        let recipient_country = sender_country.clone();
-
-        let package = Package::new(sender_country, recipient_country, 1200);
-
-        assert!(!package.is_international());
-    }
-
-    #[test]
-    fn calculate_transport_fees() {
-        let sender_country = String::from("Spain");
-        let recipient_country = String::from("Spain");
-
-        let cents_per_gram = 3;
-
-        let package = Package::new(sender_country, recipient_country, 1500);
-
-        assert_eq!(package.get_fees(cents_per_gram), 4500);
-        assert_eq!(package.get_fees(cents_per_gram * 2), 9000);
+        assert_eq!(state.color, (255, 0, 255));
+        assert_eq!(state.position.x, 10);
+        assert_eq!(state.position.y, 15);
+        assert_eq!(state.quit, true);
+        assert_eq!(state.message, "hello world");
     }
 }
