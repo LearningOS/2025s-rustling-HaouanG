@@ -2,7 +2,7 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,8 +37,27 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        // Add the new value at the end of the vector
+        self.items.push(value);
+        self.count += 1;
+        
+        // Bubble up to restore the heap property
+        let mut idx = self.count;
+        while idx > 1 {
+            let parent_idx = self.parent_idx(idx);
+            let parent_value = &self.items[parent_idx];
+            let current_value = &self.items[idx];
+            
+            // Compare the current value with the parent based on the comparator
+            if (self.comparator)(current_value, parent_value) {
+                self.items.swap(idx, parent_idx);
+                idx = parent_idx;
+            } else {
+                break;
+            }
+        }
     }
+    
 
     fn parent_idx(&self, idx: usize) -> usize {
         idx / 2
@@ -57,9 +76,22 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left_idx = self.left_child_idx(idx);
+        let right_idx = self.right_child_idx(idx);
+        
+        // If the right child doesn't exist, return the left child
+        if right_idx > self.count {
+            return left_idx;
+        }
+        
+        // Compare the left and right children using the comparator
+        if (self.comparator)(&self.items[left_idx], &self.items[right_idx]) {
+            left_idx
+        } else {
+            right_idx
+        }
     }
+    
 }
 
 impl<T> Heap<T>
@@ -84,9 +116,31 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+        
+        // The root element is at index 1
+        let root = self.items.swap_remove(1);
+        self.count -= 1;
+        
+        // Rebuild the heap property from the root down (bubble down)
+        let mut idx = 1;
+        while self.children_present(idx) {
+            let smallest_child_idx = self.smallest_child_idx(idx);
+            
+            // Compare the current value with the smallest child based on the comparator
+            if (self.comparator)(&self.items[smallest_child_idx], &self.items[idx]) {
+                self.items.swap(idx, smallest_child_idx);
+                idx = smallest_child_idx;
+            } else {
+                break;
+            }
+        }
+        
+        Some(root)
     }
+    
 }
 
 pub struct MinHeap;

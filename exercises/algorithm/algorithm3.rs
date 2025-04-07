@@ -3,10 +3,22 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
+// I AM DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort<T>(array: &mut [T])
+where
+    T: Ord, // Ensures that elements can be compared
+{
+    let len = array.len();
+    
+    // Bubble Sort: Traverse the list and perform swaps if necessary
+    for i in 0..len {
+        for j in 0..(len - 1 - i) {
+            if array[j] > array[j + 1] {
+                array.swap(j, j + 1); // Swap elements if they are out of order
+            }
+        }
+    }
 }
 #[cfg(test)]
 mod tests {

@@ -1,13 +1,7 @@
-/*
-	dfs
-	This problem requires you to implement a basic DFS traversal
-*/
-
-// I AM NOT DONE
 use std::collections::HashSet;
 
 struct Graph {
-    adj: Vec<Vec<usize>>, 
+    adj: Vec<Vec<usize>>,
 }
 
 impl Graph {
@@ -22,15 +16,24 @@ impl Graph {
         self.adj[dest].push(src); 
     }
 
+    // Utility function for DFS traversal
     fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
-        //TODO
+        visited.insert(v); // Mark the node as visited
+        visit_order.push(v); // Record the node in visit order
+
+        // Visit all unvisited neighbors
+        for &neighbor in &self.adj[v] {
+            if !visited.contains(&neighbor) {
+                self.dfs_util(neighbor, visited, visit_order); // Recursive DFS call
+            }
+        }
     }
 
     // Perform a depth-first search on the graph, return the order of visited nodes
     fn dfs(&self, start: usize) -> Vec<usize> {
-        let mut visited = HashSet::new();
-        let mut visit_order = Vec::new(); 
-        self.dfs_util(start, &mut visited, &mut visit_order);
+        let mut visited = HashSet::new(); // To track visited nodes
+        let mut visit_order = Vec::new(); // To store the order of visited nodes
+        self.dfs_util(start, &mut visited, &mut visit_order); // Start DFS traversal
         visit_order
     }
 }
@@ -56,7 +59,7 @@ mod tests {
         graph.add_edge(0, 2);
         graph.add_edge(1, 2);
         graph.add_edge(2, 3);
-        graph.add_edge(3, 3); 
+        graph.add_edge(3, 3); // Self-loop
 
         let visit_order = graph.dfs(0);
         assert_eq!(visit_order, vec![0, 1, 2, 3]);
@@ -67,12 +70,11 @@ mod tests {
         let mut graph = Graph::new(5);
         graph.add_edge(0, 1);
         graph.add_edge(0, 2);
-        graph.add_edge(3, 4); 
+        graph.add_edge(3, 4);
 
         let visit_order = graph.dfs(0);
-        assert_eq!(visit_order, vec![0, 1, 2]); 
+        assert_eq!(visit_order, vec![0, 1, 2]); // Starting from node 0
         let visit_order_disconnected = graph.dfs(3);
-        assert_eq!(visit_order_disconnected, vec![3, 4]); 
+        assert_eq!(visit_order_disconnected, vec![3, 4]); // Starting from node 3
     }
 }
-

@@ -2,7 +2,7 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -29,8 +29,25 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let (from, to, weight) = edge;
+    
+        // Ensure both nodes are present in the adjacency table
+        self.add_node(from);
+        self.add_node(to);
+    
+        // Add the edge from 'from' to 'to'
+        self.adjacency_table
+            .entry(from.to_string())
+            .or_insert_with(Vec::new)
+            .push((to.to_string(), weight));
+    
+        // Add the reverse edge from 'to' to 'from'
+        self.adjacency_table
+            .entry(to.to_string())
+            .or_insert_with(Vec::new)
+            .push((from.to_string(), weight));
     }
+    
 }
 pub trait Graph {
     fn new() -> Self;
