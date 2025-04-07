@@ -13,5 +13,5 @@ fn main() {
 }
 
 fn current_favorite_color() ->  &'static str{
-    "blue".to_string()
+    "blue"
 }
